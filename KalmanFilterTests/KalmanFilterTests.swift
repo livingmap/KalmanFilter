@@ -27,15 +27,15 @@ class KalmanFilterTests: XCTestCase {
         self.stateTransitionMatrix = Matrix(identityOfSize: 2)
         self.controlMatrix = Matrix(identityOfSize: 2)
         
-        self.measurementNoise = Matrix(grid: [
-            pow(GENERAL_WIFI_ACCURACY_METERS, 2.0), 0.0,
-            0.0, pow(GENERAL_WIFI_ACCURACY_METERS, 2.0)
-        ], rows: 2, columns: 2)
+        self.measurementNoise = Matrix([
+            [pow(GENERAL_WIFI_ACCURACY_METERS, 2.0), 0.0],
+            [0.0, pow(GENERAL_WIFI_ACCURACY_METERS, 2.0)]
+        ])
         
-        self.processNoise = Matrix(grid: [
-            pow(STRIDE_LENGTH_VARIANCE_METERS, 2.0), 0.0,
-            0.0, pow(STRIDE_LENGTH_VARIANCE_METERS, 2.0)
-        ], rows: 2, columns: 2)
+        self.processNoise = Matrix([
+            [STRIDE_LENGTH_VARIANCE_METERS, 0.0],
+            [0.0, STRIDE_LENGTH_VARIANCE_METERS]
+        ])
     }
     
     func kalmanFilterCorrect(kalmanFilter: KalmanFilter<Matrix>, measurement: Matrix) -> KalmanFilter<Matrix> {
