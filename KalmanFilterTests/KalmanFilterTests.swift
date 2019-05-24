@@ -15,13 +15,13 @@ class KalmanFilterTests: XCTestCase {
     let STRIDE_LENGTH_VARIANCE_METERS = 0.1
     let MEAN_STRIDE_LENGTH_METERS = 0.762
     
-    var measurementMatrix: Matrix
-    var measurementNoise: Matrix
-    var processNoise: Matrix
-    var stateTransitionMatrix: Matrix
-    var controlMatrix: Matrix
+    var measurementMatrix: Matrix? = nil
+    var measurementNoise: Matrix? = nil
+    var processNoise: Matrix? = nil
+    var stateTransitionMatrix: Matrix? = nil
+    var controlMatrix: Matrix? = nil
     
-    override init() {
+    override func setUp() {
         
         self.measurementMatrix = Matrix(identityOfSize: 2)
         self.stateTransitionMatrix = Matrix(identityOfSize: 2)
@@ -36,31 +36,29 @@ class KalmanFilterTests: XCTestCase {
             pow(STRIDE_LENGTH_VARIANCE_METERS, 2.0), 0.0,
             0.0, pow(STRIDE_LENGTH_VARIANCE_METERS, 2.0)
         ], rows: 2, columns: 2)
-        
-        super.init()
     }
     
     func kalmanFilterCorrect(kalmanFilter: KalmanFilter<Matrix>, measurement: Matrix) -> KalmanFilter<Matrix> {
         // introduce noise
         let kalmanFilter = kalmanFilter.predict(
-            stateTransitionModel: stateTransitionMatrix,
-            controlInputModel: controlMatrix,
+            stateTransitionModel: stateTransitionMatrix!,
+            controlInputModel: controlMatrix!,
             controlVector: Matrix(vector: [0, 0]),
-            covarianceOfProcessNoise: processNoise
+            covarianceOfProcessNoise: processNoise!
         )
         return kalmanFilter.update(
             measurement: measurement,
-            observationModel: measurementMatrix,
-            covarienceOfObservationNoise: measurementNoise
+            observationModel: measurementMatrix!,
+            covarienceOfObservationNoise: measurementNoise!
         )
     }
     
     func kalmanFilterPredict(kalmanFilter: KalmanFilter<Matrix>, controlVector: Matrix) -> KalmanFilter<Matrix> {
         return kalmanFilter.predict(
-            stateTransitionModel: stateTransitionMatrix,
-            controlInputModel: controlMatrix,
+            stateTransitionModel: stateTransitionMatrix!,
+            controlInputModel: controlMatrix!,
             controlVector: controlVector,
-            covarianceOfProcessNoise: processNoise
+            covarianceOfProcessNoise: processNoise!
         )
     }
     
@@ -69,7 +67,7 @@ class KalmanFilterTests: XCTestCase {
         let finalStateEstimate = Matrix(vector: [530375.1952072862, 181405.91357055644])
         let strideVector = Matrix(vector: [MEAN_STRIDE_LENGTH_METERS / 2, MEAN_STRIDE_LENGTH_METERS / 2])
         
-        var kalmanFilter = KalmanFilter(stateEstimatePrior: initialStateEstimate, errorCovariancePrior: measurementNoise)
+        var kalmanFilter = KalmanFilter(stateEstimatePrior: initialStateEstimate, errorCovariancePrior: measurementNoise!)
         kalmanFilter = kalmanFilterPredict(kalmanFilter: kalmanFilter, controlVector: strideVector)
         kalmanFilter = kalmanFilterPredict(kalmanFilter: kalmanFilter, controlVector: strideVector)
         kalmanFilter = kalmanFilterPredict(kalmanFilter: kalmanFilter, controlVector: strideVector)
