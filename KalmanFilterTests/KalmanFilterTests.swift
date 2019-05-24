@@ -73,8 +73,9 @@ class KalmanFilterTests: XCTestCase {
         kalmanFilter = kalmanFilterPredict(kalmanFilter: kalmanFilter, controlVector: strideVector)
         kalmanFilter = kalmanFilterCorrect(kalmanFilter: kalmanFilter, measurement: finalStateEstimate)
         
-        // assert = {530,372.8823501434; 181,403.6007134136}
-        print(kalmanFilter.stateEstimatePrior)
+        let accuracy = 0.0000000001
+        XCTAssertEqual(kalmanFilter.stateEstimatePrior.grid[0], 530372.8823501434, accuracy: accuracy)
+        XCTAssertEqual(kalmanFilter.stateEstimatePrior.grid[1], 181403.6007134136, accuracy: accuracy)
     }
     
     func testKalmanFilter2D() {
